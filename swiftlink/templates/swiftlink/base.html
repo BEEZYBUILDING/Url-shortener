@@ -1,16 +1,33 @@
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SwiftLink - URL Shortener</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css">
+</head>
+<body>
+    <nav>
+        <a href="{% url 'swiftlink:home' %}"><strong>SwiftLink</strong></a> |
 
-<h2>SwiftLink URL Shortener</h2>
+        {% if user.is_authenticated %}
+            <span>Hello, {{ user.username }}!</span> |
+            <a href="{% url 'swiftlink:logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'swiftlink:login' %}">Login</a> |
+            <a href="{% url 'swiftlink:register' %}">Register</a>
+        {% endif %}
+    </nav>
 
-<form method="POST" action="">
-    {% csrf_token %}
-    <input type="url" name="original_url" placeholder="Paste long URL here" required>
-    <button type="submit">Shorten</button>
-</form>
+    <hr>
 
-<hr>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
 
-{% if new_url %}
-    <p>Success! Your short key is: <strong>{{ new_url.short_key }}</strong></p>
-    <p>Full Link: <a href="/swiftlink/{{ new_url.short_key }}">localhost:8000/{{ new_url.short_key }}</a></p>
-{% endif %}
+    <hr>
+    <footer>
+        <p>&copy; SwiftLink </p>
+    </footer>
+</body>
+</html>
