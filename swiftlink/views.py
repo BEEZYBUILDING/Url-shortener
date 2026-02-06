@@ -1,8 +1,14 @@
+from django.contrib.auth import authenticate, login as auth_login
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
+from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from .forms import LoginForm
 from .models import Url
 import hashlib
 
 # Create your views here.
+@login_required
 def shortener(request):
     new_object = None
     if request.method == 'POST':
@@ -32,10 +38,42 @@ def shortener(request):
             else:
                 is_unique=True
         new_object = Url.objects.create(original_url= url, short_key=short_key )
-    return render(request,'swiftlink/base.html', {'new_url': new_object})
+    return render(request,'swiftlink/shortener.html', {'new_url': new_object})
             
             
 def redirect_url(request, short_key):
     link = get_object_or_404(Url, short_key=short_key)
     return redirect(link.original_url)
-    
+
+@login_required
+def dashboard(request):
+    return render(request, 'swiftlink/dashboard.html', {'section': 'dashbaord'})
+
+def register(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = UserCreationForm()
+        
+    return render(request, 'swiftlink/register.html', {'form': form})
+
+def user_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            user = authenticate(request, username= cd['username'], password=cd['password'])
+            if user is not None:
+                if user.is_active:
+                    auth_login(request, user)
+                    return HttpResponse('Authenticated Sucessfully')
+                else:
+                    return HttpResponse('Account has been disabled')
+            else:
+                return HttpResponse('Invalid login')
+    else:
+        form =LoginForm()
+    return render(request, 'swiftlink/login.html', {'form': form})
