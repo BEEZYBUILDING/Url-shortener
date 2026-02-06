@@ -8,6 +8,8 @@ from .models import Url
 import hashlib
 
 # Create your views here.
+def home(request):
+    return render(request, 'swiftlink/base.html')
 @login_required
 def shortener(request):
     new_object = None

@@ -15,6 +15,10 @@
         {% else %}
             <a href="{% url 'swiftlink:login' %}">Login</a> |
             <a href="{% url 'swiftlink:register' %}">Register</a>
+            <form action="{% url 'swiftlink:logout' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
         {% endif %}
     </nav>
 
