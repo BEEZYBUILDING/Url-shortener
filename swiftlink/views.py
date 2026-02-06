@@ -8,6 +8,7 @@ from .models import Url
 import hashlib
 
 # Create your views here.
+@login_required
 def shortener(request):
     new_object = None
     if request.method == 'POST':
