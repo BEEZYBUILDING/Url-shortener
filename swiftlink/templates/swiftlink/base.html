@@ -12,5 +12,7 @@
 
 {% if new_url %}
     <p>Success! Your short key is: <strong>{{ new_url.short_key }}</strong></p>
-    <p>Full Link: <a href="/swiftlink/{{ new_url.short_key }}">localhost:8000/{{ new_url.short_key }}</a></p>
+    <p>Full Link: <a href="{% url 'swiftlink:redirect' short_key=new_url.short_key %}">
+    swiftlink.pythonanywhere.com/{{ new_url.short_key }}
+</a></p>
 {% endif %}
