@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-o++ize%unuxo+$6k74pgt8$9j999ty@4o26j!ah)w4zq11cht*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['OLAJIRE.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'olajire.pythonanywhere.com']
 
 
 # Application definition
@@ -117,6 +117,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-LOGIN_REDIRECT_URL = 'swiftlink:home'
-LOGOUT_REDIRECT_URL = 'swiftlink:home'
+LOGIN_REDIRECT_URL = 'swiftlink:dashboard'
+LOGOUT_REDIRECT_URL = 'swiftlink:logout'
 LOGIN_URL = 'swiftlink:login'

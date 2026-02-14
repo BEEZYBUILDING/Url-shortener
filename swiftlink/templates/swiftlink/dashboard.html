@@ -1,0 +1,49 @@
+{% extends "swiftlink/base.html" %}
+
+{% block content %}
+<div class="dashboard">
+    <h2> Welcome, {{ request.user.username }}</h2>
+    {% if urls %}
+    <table>
+        <thead>
+            <tr>
+                <th>Original URL</th>
+                <th>Short Link</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for url in urls %}
+            <tr>
+                <td>
+                    <a href="{{ url.original_url}}" target="_blank">
+                        {{ url.original_url|truncatechars:50 }}
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'swiftlink:redirect' url.short_key %}">
+                        /s/{{ url.short_key }}
+                    </a>
+                </td>
+                <td>{{ url.createe|date:"M d, Y" }}</td>
+                <td>
+                    <form method="POST" action="{% url 'swiftlink:delete_url' url.short_key %}">
+                        {% csrf_token %}
+                        <button type="submit" onclick="return confirm('Delete this link?')">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p> You haven't shortened any Urls yet.
+            <a href="{% url 'swiftlink:shortener' %}">
+                Create one
+            </a>
+        </p>  
+</div>
+{% endblock %}

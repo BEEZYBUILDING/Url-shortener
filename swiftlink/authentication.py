@@ -1,0 +1,1 @@
+from django.contrib.auth.models import User #imports django built-in user model
