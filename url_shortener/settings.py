@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-o++ize%unuxo+$6k74pgt8$9j999ty@4o26j!ah)w4zq11cht*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'olajire.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'olajire.pythonanywhere.com', 'swiftlink.com']
 
 
 # Application definition
@@ -38,11 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'swiftlink',
+    'django_extensions',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -118,5 +124,23 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 LOGIN_REDIRECT_URL = 'swiftlink:dashboard'
-LOGOUT_REDIRECT_URL = 'swiftlink:logout'
+LOGOUT_REDIRECT_URL = 'swiftlink:login'
 LOGIN_URL = 'swiftlink:login'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1
+
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'APP': {
+            'client_id': '402499073552-v5rbj5tpmv1bvqmp4bjkhu75laj4q6ir.apps.googleusercontent.com',
+            'secret': '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',
+        },
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'access_type': 'online'},
+    }
+}

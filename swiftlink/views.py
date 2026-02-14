@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
-#from .forms import LoginForm
+from .forms import RegisterForm
 from .models import Url
 import hashlib
 
@@ -13,17 +13,12 @@ def home(request):
 
 @login_required
 def dashboard(request):
-    urls = Url.objects.filter(request.user).order_by('-created')
-    return render(request, 'swiftlink/dashboard.html', {'urls': urls})
-
-@login_required
-def shortener(request):
-    new_object = None
+    new_url = None
     if request.method == 'POST':
         alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
-        url = request.POST.get('original_url')
+        original_url = request.POST.get('original_url')
         is_unique = False
-        if url.startswith(('http://', 'https://')) == False:
+        if not original_url.url.startswith(('http://', 'https://')):
             url = 'https://' + url
         salt = ''
         while not is_unique:
@@ -45,24 +40,26 @@ def shortener(request):
                 salt += 'a'
             else:
                 is_unique=True
-        new_object = Url.objects.create(original_url= url, short_key=short_key, user=request.user )
-    return render(request,'swiftlink/shortener.html', {'new_url': new_object})
+        new_url = Url.objects.create(original_url= original_url, short_key=short_key, user=request.user )
+    urls = Url.objects.filter(user=request.user).order_by('-created')
+    return render(request,'swiftlink/dashboard.html', {'urls': urls, 'new_url': new_url})
             
             
 def redirect_url(request, short_key):
     link = get_object_or_404(Url, short_key=short_key)
     return redirect(link.original_url)
 
-
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegisterForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            user = form.save(commit=False)
+            user.email = form.cleaned_data['email']
+            user.save()
             auth_login(request, user)
             return redirect('swiftlink:login')
     else:
-        form = UserCreationForm()
+        form = RegisterForm()
     return render(request, 'swiftlink/register.html', {'form': form})
 
 def delete_url(request, short_key):

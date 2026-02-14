@@ -11,14 +11,14 @@
 
         {% if user.is_authenticated %}
             <span>Hello, {{ user.username }}!</span> |
-            <a href="{% url 'swiftlink:logout' %}">Logout</a>
-        {% else %}
-            <a href="{% url 'swiftlink:login' %}">Login</a> |
-            <a href="{% url 'swiftlink:register' %}">Register</a>
-            <form action="{% url 'swiftlink:logout' %}" method="post">
+            <form action="{% url 'swiftlink:logout' %}" method="post" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit">Logout</button>
             </form>
+        {% else %}
+            <a href="{% url 'swiftlink:login' %}">Login</a> |
+            <a href="{% url 'swiftlink:register' %}">Register</a>
+          
         {% endif %}
     </nav>
 

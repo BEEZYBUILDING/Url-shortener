@@ -3,6 +3,21 @@
 {% block content %}
 <div class="dashboard">
     <h2> Welcome, {{ request.user.username }}</h2>
+    <form method="POST" action="">
+        {% csrf_token %}
+        <input type="url" name="original_url" placeholder="Paste long URL here" required>
+        <button type="submit">Shorten</button>
+    </form>
+
+    <hr>
+    {% if new_url %}
+        <p>Your link: 
+            <a href="{% url 'swiftlink:redirect' new_url.short_key %}" target="_blank">
+                swiftlink/{{ new_url.short_key }}/
+            </a>
+        </p>
+    {% endif %}
+
     {% if urls %}
     <table>
         <thead>
@@ -26,7 +41,7 @@
                         /s/{{ url.short_key }}
                     </a>
                 </td>
-                <td>{{ url.createe|date:"M d, Y" }}</td>
+                <td>{{ url.created|date:"M d, Y" }}</td>
                 <td>
                     <form method="POST" action="{% url 'swiftlink:delete_url' url.short_key %}">
                         {% csrf_token %}
@@ -41,9 +56,10 @@
     </table>
     {% else %}
         <p> You haven't shortened any Urls yet.
-            <a href="{% url 'swiftlink:shortener' %}">
+            <a href="{% url 'swiftlink:dashboard' %}">
                 Create one
             </a>
         </p>  
+    {% endif %}
 </div>
 {% endblock %}

@@ -1,10 +1,20 @@
 {% extends "swiftlink/base.html" %}
 {% block content %}
-<form method="POST">
+<form method="POST" action="{% url 'swiftlink:login' %}">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">
         Log in
     </button>
 </form>
+<hr>
+ <a href="{% url 'google_login' %}">
+        Sign in with Google
+</a>
+<p>
+    Don't have an account? 
+    <a href="{% url 'swiftlink:register' %}">
+        Sign up here
+    </a>
+</p>
 {% endblock %}

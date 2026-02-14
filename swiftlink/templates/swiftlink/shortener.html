@@ -2,16 +2,15 @@
 
 <h1>SwiftLink: URL Shortener</h1>
 
-<form method="POST" action="">
-    {% csrf_token %}
 
-    <input type="url" name="original_url" placeholder="Paste long URL here" required>
-    <button type="submit">Shorten</button>
-</form>
 
 <hr>
 
 {% if new_url %}
     <p>Success! Your short key is: <strong>{{ new_url.short_key }}</strong></p>
-    <p>Full Link: <a href="/swiftlink/{{ new_url.short_key }}" target="_blank">localhost:8000/{{ new_url.short_key }}</a></p>
+    <p>Full Link: 
+        <a href="{% url 'swiftlink:redirect' new_url.short_key %}" target="_blank">
+            swiftlink/{{ new_url.short_key }}/
+        </a>
+    </p>
 {% endif %}
