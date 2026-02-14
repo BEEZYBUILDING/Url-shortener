@@ -56,7 +56,7 @@ def register(request):
             user = form.save(commit=False)
             user.email = form.cleaned_data['email']
             user.save()
-            auth_login(request, user)
+            auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('swiftlink:login')
     else:
         form = RegisterForm()
