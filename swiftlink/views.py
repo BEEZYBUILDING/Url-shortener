@@ -17,30 +17,31 @@ def dashboard(request):
     if request.method == 'POST':
         alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
         original_url = request.POST.get('original_url')
-        is_unique = False
-        if not original_url.startswith(('http://', 'https://')):
-            url = 'https://' + url
-        salt = ''
-        while not is_unique:
-            temp = url+salt
-            encoded = temp.encode('utf-8')
-            encoder = hashlib.md5()
-            encoder.update(encoded)
-            hexed_string = encoder.hexdigest()
-            hex_digit = hexed_string[:8]
-            new_hex = int(hex_digit, 16)
-            short_key = ''
-            while len(short_key) <6: 
-                remainder = new_hex % 64
-                char = str(alphabet[remainder])
-                short_key = short_key+char
-                new_hex = new_hex // 64
-                
-            if Url.objects.filter(short_key=short_key).exists():
-                salt += 'a'
-            else:
-                is_unique=True
-        new_url = Url.objects.create(original_url= original_url, short_key=short_key, user=request.user )
+        if original_url:
+            if not original_url.startswith(('http://', 'https://')):
+                original_url = 'https://' + original_url
+            salt = ''
+            is_unique = False
+            while not is_unique:
+                temp = original_url + salt
+                encoded = temp.encode('utf-8')
+                encoder = hashlib.md5()
+                encoder.update(encoded)
+                hexed_string = encoder.hexdigest()
+                hex_digit = hexed_string[:8]
+                new_hex = int(hex_digit, 16)
+                short_key = ''
+                while len(short_key) <6: 
+                    remainder = new_hex % 64
+                    char = str(alphabet[remainder])
+                    short_key = short_key+char
+                    new_hex = new_hex // 64
+                    
+                if Url.objects.filter(short_key=short_key).exists():
+                    salt += 'a'
+                else:
+                    is_unique=True
+            new_url = Url.objects.create(original_url= original_url, short_key=short_key, user=request.user )
     urls = Url.objects.filter(user=request.user).order_by('-created')
     return render(request,'swiftlink/dashboard.html', {'urls': urls, 'new_url': new_url})
             
