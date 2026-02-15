@@ -18,7 +18,7 @@ def dashboard(request):
         alphabet = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ-_"
         original_url = request.POST.get('original_url')
         is_unique = False
-        if not original_url.url.startswith(('http://', 'https://')):
+        if not original_url.startswith(('http://', 'https://')):
             url = 'https://' + url
         salt = ''
         while not is_unique:
